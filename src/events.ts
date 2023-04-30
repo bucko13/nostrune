@@ -15,15 +15,10 @@ type TagType = string
 type EventTags = [TagType, string]
 
 declare enum AuthEventKind {
-  AUTH_402 = 1402
+  AUTH_402 = 10402
 }
 
-const EventKinds = { ...AuthEventKind, ...Kind }
-
-type ValueOf<T> = T[keyof T]
-type EventKind = ValueOf<typeof EventKinds>
-
-const createBaseEvent = (kind: EventKind, tags: EventTags[], content: string = ""): EventTemplate => ({
+const createBaseEvent = (kind: AuthEventKind | Kind, tags: EventTags[], content: string = ""): EventTemplate => ({
   kind,
   created_at: Math.floor(Date.now() / 1000),
   tags,
@@ -55,7 +50,7 @@ export const createTextEvent = (content: string) => {
 
 export const createAuthorizeEvent = (challenge: string, relay: string) => {
   const lsat = Lsat.fromChallenge(challenge)
-  const e: EventTemplate = createBaseEvent(1402, [["relay", relay], ["lsat", lsat.toToken()]])
+  const e: EventTemplate = createBaseEvent(10402, [["relay", relay], ["lsat", lsat.toToken()]])
   return finalizeEvent(e)
 }
 
